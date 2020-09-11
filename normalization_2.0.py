@@ -251,11 +251,15 @@ plt.savefig(filename)
 
 
 
-def param_out(inf_src, titles = "", head = "------"):
+def param_out(inf_src, titles_arr, iter_num = 0, head = "------",):
+    if iter_num != 0:
+        iter_num_in_func = iter_num
+    else:
+        iter_num_in_func = len(inf_src)
     with open('parameters.csv', 'w') as myfile:
         myfile.write(head + '\n')
-        for x in range(6):
-            myfile.write(titles[x])
+        for x in range(iter_num_in_func):
+            myfile.write(titles_arr[x])
             for key, value in inf_src[x].best_values.items():
                 str_to_file = "{0} = {1:.2f}, ".format(key, value)
                 myfile.write(str_to_file)
@@ -264,43 +268,11 @@ def param_out(inf_src, titles = "", head = "------"):
     myfile.close()
 
 #Запись файла с параметрами
-with open('parameters.csv', 'w') as myfile:
-    myfile.write("The best fitted parameters for second order model" + '\n')
-    for x in range(6):
-        myfile.write(common_name[x])
-        for key, value in result_sec_or[x].best_values.items():
-            str_to_file = "{0} = {1:.2f}, ".format(key, value)
-            myfile.write(str_to_file)
-        myfile.write("chisqr = {0:.2f}".format(result_sec_or[x].chisqr))
-        myfile.write('\n')
 
-    myfile.write("The best fitted parameters for biexponential model for delayed fluorescence" + '\n')
-    for x in range(6):
-        myfile.write(common_name[x])
-        for key, value in result_bi_exp[x].best_values.items():
-            str_to_file =  "{0} = {1:.2f}, ".format(key, value)
-            myfile.write(str_to_file)
-        myfile.write("chisqr = {0:.2f}".format(result_bi_exp[x].chisqr))
-        myfile.write('\n')
-
-    myfile.write("The best fitted parameters for monoexponential model for delayed fluorescence" + '\n')
-    for x in range(6):
-        myfile.write(common_name[x])
-        for key, value in result_dl_fl_sing_exp[x].best_values.items():
-            str_to_file =  "{0} = {1:.2f}, ".format(key, value)
-            myfile.write(str_to_file)
-        myfile.write("chisqr = {0:.2f}".format(result_dl_fl_sing_exp[x].chisqr))
-        myfile.write('\n')
-
-
-    myfile.write("The best fitted parameters for exponential model for phosphorescence" + '\n')
-    for x in range(6):
-        myfile.write(common_name[-x - 1])
-        for key, value in result_ph_sing_exp[x].best_values.items():
-            str_to_file =  "{0} = {1:.2f}, ".format(key, value)
-            myfile.write(str_to_file)
-        myfile.write("chisqr = {0:.2f}".format(result_ph_sing_exp[x].chisqr))
-        myfile.write('\n')
+param_out(result_bi_exp, common_name, 6 ,"The best fitted parameters for biexponential model for delayed fluorescence")
+param_out(result_dl_fl_sing_exp, common_name,6, "The best fitted parameters for monoexponential model for delayed fluorescence")
+common_name.reverse()
+param_out(result_ph_sing_exp, common_name,6, "The best fitted parameters for exponential model for phosphorescence")
 
 myfile.close()
 #plt.show()
