@@ -1,2 +1,2 @@
 # delayed-fluorescense-analysis
-A programm which suppose to normalize and fit my data, which I obtained from fluorescet samples. 
+The programm product is intended to normalize and fit my fluorescent lifetimes data, which I obtained from fluorescent samples. Part af my master degree work.
