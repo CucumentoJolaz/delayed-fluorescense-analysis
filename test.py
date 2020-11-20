@@ -1,5 +1,8 @@
+from scipy.integrate import quad
+def integrand(x, a, b):
+    return a*x**2 + b
 
-ph_x = []
-for i in (0,10): ph_x.append([])
-
-print(ph_x)
+a = 2
+b = 1
+I = quad(integrand, 0, 1, args=(a,b))[0]
+print(I)

@@ -13,24 +13,6 @@ def get_args(dict_args):
     return (a, tau, c)
 
 
-def second_order_p_type(t, a=1, T10=1, b=1):
-    return a * (T10 / (1 + b * T10 * t)) ** 2
-
-
-def first_order_p_type(t, a=1, T10=1, b=1):
-    return a * (T10 / (1 + b * T10 * t))
-
-
-def mixed_order_model(t, T10=1, a=1, b=1, const=1):
-    return const * (a / (np.exp(a * t) * (a / T10 + b) - b)) ** 2
-
-
-def exponential(t, a=1, b=1, tau1=1, tau2=1, c=1):
-    e1 = 2.718 ** (-t / tau1)
-    e2 = 2.718 ** (-t / tau2)
-    return (a * e1 + b * e2) + c
-
-
 def single_exponential(t, a=1, tau1=1, c=1):
     return a * 2.718 ** (-t / tau1) + c
 
@@ -63,8 +45,8 @@ class outputs:
         myfile.close()
 
 
-NUM_OF_EXP = 4
-FILENAME = "Sheet1.csv"
+NUM_OF_EXP = 5
+FILENAME = "lt2.csv"
 ph_x = [];
 ph_y = [];
 ph_HC_x = [];
@@ -80,7 +62,7 @@ for i in range(NUM_OF_EXP):
     dl_fl_y.append([])
 
 with open(FILENAME) as csvfile:
-    readCSV = csv.reader(csvfile, delimiter=',')
+    readCSV = csv.reader(csvfile, delimiter=';')
     count = 0
     # чтение CSV файла в массив
     for row in readCSV:
@@ -105,20 +87,13 @@ with open(FILENAME) as csvfile:
                         ph_x[ph_index].append(float(row[col].replace(',', '.')))
 
             ph_HC_index = 0
-            for col in range(NUM_OF_EXP * 4, NUM_OF_EXP * 6, 1):
-                if (row[col]):
-                    if col % 2:
-                        ph_HC_y[ph_HC_index].append(float(row[col].replace(',', '.')))
-                        ph_HC_index += 1
-                    else:
-                        ph_HC_x[ph_HC_index].append(float(row[col].replace(',', '.')))
 
         count += 1
 
 # создание модели для фитинга
 result_dl_fl_sing_exp = []
 result_ph_sing_exp = []
-result_ph_HC_sing_exp = []
+
 
 sing_exp_model = Model(single_exponential)
 
@@ -131,16 +106,14 @@ for i in range(NUM_OF_EXP):
                                                  t=ph_x[i],
                                                  a=1,
                                                  tau1=1))
-    result_ph_HC_sing_exp.append(sing_exp_model.fit(ph_HC_y[i],
-                                                    t=ph_HC_x[i],
-                                                    a=10,
-                                                    tau1=1))
+
 
 # Массивы для хранения названий
-sample_name = ["0,015",
-               "0,010",
-               "0,008",
-               "0,004",
+sample_name = ["50 вспышек",
+               "40 вспышек",
+               "30 вспышек",
+               "20 вспышек",
+               "10 вспышек",
                ]
 ph_x_lin = np.linspace(0, 10, 10000);
 ph_y_lin = []
@@ -170,56 +143,36 @@ for j in range(NUM_OF_EXP):
     for i in ph_x_lin:
         ph_y_lin[j].append(single_exponential(t=i, a=a, tau1=tau, c=c))
 
-    a = result_ph_HC_sing_exp[j].best_values['a']
-    tau = result_ph_HC_sing_exp[j].best_values['tau1']
-    c = result_ph_HC_sing_exp[j].best_values['c']
-    for i in ph_x_lin:
-        ph_y_HC_lin[j].append(single_exponential(t=i, a=a, tau1=tau, c=c))
 
 # Построение фиттингов для замедленной флуоресценции
 plt.figure(1)
 
 #plt.title("Delayed fluorescence")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
-plt.axis([0, 6, 0, 90])
+#plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+plt.axis([0, 6, 0, 150])
 for i in range(NUM_OF_EXP):
     plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=0.5)
     plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
 plt.ylabel("Интенсивность, отн. ед.")
 plt.legend(loc='best')
-filename = "Delayed fluorescence 2" + ".png"
+filename = "Delayed fluorescence 3" + ".png"
 plt.savefig(filename)
 
 plt.figure(2)
 #plt.title("Phosphorescence")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
-plt.axis([0, 10, 0, 50])
+#plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+plt.axis([0, 10, 0, 400])
 
 for i in range(NUM_OF_EXP):
     plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=0.5)
-    plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
+    #plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
 plt.ylabel("Интенсивность, отн. ед.")
 plt.legend(loc='best')
-filename = "Phosphorescence 2" + ".png"
+filename = "Phosphorescence 3" + ".png"
 plt.savefig(filename)
 
-plt.figure(3)
-#plt.title("Phosphorescence with dark filter HC-9")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
-plt.axis([0, 10, 0, 700])
-
-for i in range(NUM_OF_EXP):
-    plt.plot(ph_HC_x[i], ph_HC_y[i], label=sample_name[i], linewidth=0.5)
-    #plt.plot(ph_x_HC_lin, ph_y_HC_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
-plt.legend(loc='best')
-
-filename = "Phosphorescence with HC 2" + ".png"
-plt.savefig(filename)
-plt.show()
 
 ph_integr = np.zeros(NUM_OF_EXP + 1);
 ph_HC_integr = np.zeros(NUM_OF_EXP + 1);
@@ -227,54 +180,55 @@ dl_fl_integr = np.zeros(NUM_OF_EXP + 1)
 fl_ph_ratio = np.zeros(NUM_OF_EXP + 1)
 fl_ph_HC_ratio = np.zeros(NUM_OF_EXP + 1)
 ph_HC_integr_10 = np.zeros(NUM_OF_EXP + 1)
-ph_HC_norm = np.zeros(NUM_OF_EXP + 1)
-fl_norm = np.zeros(NUM_OF_EXP + 1)
 HC_9_koef = 50
-for i in range(NUM_OF_EXP):
-    ph_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_sing_exp[i].best_values))[0]
-    ph_HC_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_HC_sing_exp[i].best_values))[0]
-    dl_fl_integr[i] = quad(single_exponential, 0, 6, args=get_args(result_dl_fl_sing_exp[i].best_values))[0]
-    fl_ph_HC_ratio[i] = dl_fl_integr[i]/(ph_HC_integr[i]*HC_9_koef)
-    fl_ph_ratio[i] = dl_fl_integr[i] / (ph_integr[i] * HC_9_koef)
-    ph_HC_integr_10[i] = ph_HC_integr[i]/10
+for i in range(0, NUM_OF_EXP ):
+
+    ph_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_sing_exp[i ].best_values))[0]
+    dl_fl_integr[i] = quad(single_exponential, 0, 6, args=get_args(result_dl_fl_sing_exp[i ].best_values))[0]
+
     if i == 0:
-        ph_int_max = ph_HC_integr[0]
+        ph_int_max = ph_integr[0]
         fl_int_max = dl_fl_integr[0]
-    ph_HC_norm[i] = ph_HC_integr[i]/ph_int_max
-    fl_norm[i] = dl_fl_integr[i]/fl_int_max
-ph_HC_norm[0] = 0.99
-naph_conc = [0.015, 0.010, 0.008, 0.004, 0,
-             ]
 
-CELLS_NUM_AROUND = 12
-x = np.arange(0,0.05,0.001)
-y = np.zeros(len(x))
+    ph_integr[i] /= ph_int_max
+    dl_fl_integr[i] /= fl_int_max
 
-for i in range(len(x)):
-	y[i] = x[i]*(1 - (1 - x[i])**CELLS_NUM_AROUND)
+    fl_ph_ratio[i] = dl_fl_integr[i] / (ph_integr[i])
+
+
+ph_integr[0] = 0.99
+naph_conc = [50, 40, 30, 20, 10, 0]
+
+y = np.zeros(len(naph_conc))
+for i in range(len(naph_conc)):
+    y[i] = 1.1/35*naph_conc[i]
+
+# for i in range(len(x)):
+# 	y[i] = x[i]*(1 - (1 - x[i])**CELLS_NUM_AROUND)
 
 
 plt.figure(5)
+plt.axis([0, 55, 0, 1.4])
 #plt.title("Delayed fluorescence - phosphorescence intensity ratio")
 #plt.plot([], [], ' ', label="Number of solution, naph/b-CD")
-plt.axis([0, 0.017, 0, 0.0028])
-plt.plot(naph_conc, fl_ph_HC_ratio, '-o', label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
-plt.plot(x, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
+#plt.axis([0, 10, 0, 700])
+plt.plot(naph_conc, fl_ph_ratio, '-o', label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
+plt.plot(naph_conc, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
 plt.legend(loc='best')
-filename = "dlfl_ph_ratio" + ".png"
-plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)")
-plt.ylabel("Интенсивность/Интенсивность")
+filename = "dlfl_ph_ratio_3" + ".png"
+plt.xlabel("Количество вспышек, шт")
+plt.ylabel("Интенсивность/Интенсивность.")
 plt.savefig(filename)
 plt.show()
 
 plt.figure(6)
-plt.axis([0, 0.017 , 0, 1.05])
-plt.plot(naph_conc, ph_HC_norm, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
-plt.plot(naph_conc, fl_norm, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
+plt.axis([0, 55, 0, 1.1])
+plt.plot(naph_conc, ph_integr, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
+plt.plot(naph_conc, dl_fl_integr, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
 plt.legend(loc='best')
-plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)")
+plt.xlabel("Количество вспышек, шт")
 plt.ylabel("Интенсивность, отн. ед.")
-filename = "Integral intensities" + ".png"
+filename = "Integral intensities_3" + ".png"
 plt.savefig(filename)
 plt.show()
 # Запись файла с параметрами
