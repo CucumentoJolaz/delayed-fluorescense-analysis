@@ -1,8 +1,9 @@
-from scipy.integrate import quad
-def integrand(x, a, b):
-    return a*x**2 + b
-
-a = 2
-b = 1
-I = quad(integrand, 0, 1, args=(a,b))[0]
-print(I)
+from matplotlib import pyplot as plt
+plt.ion()
+plt.plot([1,2,3])
+# h = plt.ylabel('y')
+# h.set_rotation(0)
+plt.ylabel(-0.1, 0.5, 'Y label', rotation=90,
+            verticalalignment='center', horizontalalignment='right',
+            transform=plt.ylabel.transAxes)
+plt.draw()

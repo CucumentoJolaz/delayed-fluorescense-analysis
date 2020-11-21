@@ -154,7 +154,9 @@ for i in range(NUM_OF_EXP):
     plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=0.5)
     plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 plt.legend(loc='best')
 filename = "Delayed fluorescence 3" + ".png"
 plt.savefig(filename)
@@ -168,7 +170,9 @@ for i in range(NUM_OF_EXP):
     plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=0.5)
     #plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 plt.legend(loc='best')
 filename = "Phosphorescence 3" + ".png"
 plt.savefig(filename)
@@ -181,15 +185,16 @@ fl_ph_ratio = np.zeros(NUM_OF_EXP + 1)
 fl_ph_HC_ratio = np.zeros(NUM_OF_EXP + 1)
 ph_HC_integr_10 = np.zeros(NUM_OF_EXP + 1)
 HC_9_koef = 50
+ph_notnorm = np.zeros(NUM_OF_EXP + 1)
+dlfl_notnorm = np.zeros(NUM_OF_EXP + 1)
 for i in range(0, NUM_OF_EXP ):
 
     ph_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_sing_exp[i ].best_values))[0]
-    dl_fl_integr[i] = quad(single_exponential, 0, 6, args=get_args(result_dl_fl_sing_exp[i ].best_values))[0]
-
+    dlfl_notnorm[i] = dl_fl_integr[i] = quad(single_exponential, 0, 6, args=get_args(result_dl_fl_sing_exp[i ].best_values))[0]
+    ph_notnorm[i] = ph_integr[i]**2
     if i == 0:
         ph_int_max = ph_integr[0]
         fl_int_max = dl_fl_integr[0]
-
     ph_integr[i] /= ph_int_max
     dl_fl_integr[i] /= fl_int_max
 
@@ -205,19 +210,32 @@ for i in range(len(naph_conc)):
 
 # for i in range(len(x)):
 # 	y[i] = x[i]*(1 - (1 - x[i])**CELLS_NUM_AROUND)
+f = open("out_2.txt", 'w')
+f.write("qty_of_flashes; ph_integr; dl_fl_integr; \n")
 
+for i in range(NUM_OF_EXP+1):
+    f.write("{}; {}; {}; \n".format(naph_conc[i],ph_notnorm[i]**0.5,dlfl_notnorm[i]))
+f.close()
+
+fig = plt.figure()
 
 plt.figure(5)
-plt.axis([0, 55, 0, 1.4])
+ax = fig.add_subplot(111)
+
+#plt.axis([0, 55, 0, 1.4])
 #plt.title("Delayed fluorescence - phosphorescence intensity ratio")
 #plt.plot([], [], ' ', label="Number of solution, naph/b-CD")
 #plt.axis([0, 10, 0, 700])
-plt.plot(naph_conc, fl_ph_ratio, '-o', label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
-plt.plot(naph_conc, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
+plt.plot(ph_notnorm, dlfl_notnorm, '-o') #label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
+#plt.plot(naph_conc, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
 plt.legend(loc='best')
 filename = "dlfl_ph_ratio_3" + ".png"
-plt.xlabel("Количество вспышек, шт")
-plt.ylabel("Интенсивность/Интенсивность.")
+plt.xlabel("Квадрат интеральной интенсивности фософресценции, отн. ед.^2")
+plt.title("Интегральная интенсивность замедленной флуоресценции, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
+plt.grid(True)
+
 plt.savefig(filename)
 plt.show()
 
@@ -226,8 +244,11 @@ plt.axis([0, 55, 0, 1.1])
 plt.plot(naph_conc, ph_integr, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
 plt.plot(naph_conc, dl_fl_integr, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
 plt.legend(loc='best')
+plt.grid(True)
 plt.xlabel("Количество вспышек, шт")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 filename = "Integral intensities_3" + ".png"
 plt.savefig(filename)
 plt.show()

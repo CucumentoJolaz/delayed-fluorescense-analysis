@@ -186,7 +186,9 @@ for i in range(NUM_OF_EXP):
     plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=0.5)
     plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 plt.legend(loc='best')
 filename = "Delayed fluorescence 2" + ".png"
 plt.savefig(filename)
@@ -200,7 +202,9 @@ for i in range(NUM_OF_EXP):
     plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=0.5)
     plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 plt.legend(loc='best')
 filename = "Phosphorescence 2" + ".png"
 plt.savefig(filename)
@@ -214,7 +218,9 @@ for i in range(NUM_OF_EXP):
     plt.plot(ph_HC_x[i], ph_HC_y[i], label=sample_name[i], linewidth=0.5)
     #plt.plot(ph_x_HC_lin, ph_y_HC_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
 plt.xlabel("Время, с")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 plt.legend(loc='best')
 
 filename = "Phosphorescence with HC 2" + ".png"
@@ -229,19 +235,24 @@ fl_ph_HC_ratio = np.zeros(NUM_OF_EXP + 1)
 ph_HC_integr_10 = np.zeros(NUM_OF_EXP + 1)
 ph_HC_norm = np.zeros(NUM_OF_EXP + 1)
 fl_norm = np.zeros(NUM_OF_EXP + 1)
+ph_notnorm = np.zeros(NUM_OF_EXP + 1)
 HC_9_koef = 50
+
 for i in range(NUM_OF_EXP):
     ph_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_sing_exp[i].best_values))[0]
     ph_HC_integr[i] = quad(single_exponential, 0, 10, args=get_args(result_ph_HC_sing_exp[i].best_values))[0]
     dl_fl_integr[i] = quad(single_exponential, 0, 6, args=get_args(result_dl_fl_sing_exp[i].best_values))[0]
-    fl_ph_HC_ratio[i] = dl_fl_integr[i]/(ph_HC_integr[i]*HC_9_koef)
-    fl_ph_ratio[i] = dl_fl_integr[i] / (ph_integr[i] * HC_9_koef)
+    ph_notnorm[i] = ph_HC_integr[i] ** 2
+    #print(ph_HC_integr[i], "a", ph_notnorm[i] )
     ph_HC_integr_10[i] = ph_HC_integr[i]/10
     if i == 0:
         ph_int_max = ph_HC_integr[0]
         fl_int_max = dl_fl_integr[0]
     ph_HC_norm[i] = ph_HC_integr[i]/ph_int_max
     fl_norm[i] = dl_fl_integr[i]/fl_int_max
+
+
+
 ph_HC_norm[0] = 0.99
 naph_conc = [0.015, 0.010, 0.008, 0.004, 0,
              ]
@@ -253,17 +264,26 @@ y = np.zeros(len(x))
 for i in range(len(x)):
 	y[i] = x[i]*(1 - (1 - x[i])**CELLS_NUM_AROUND)
 
+f = open("out_1.txt", 'w')
+f.write("naph_conc; ph_HC_integr; dl_fl_integr; \n")
+
+for i in range(NUM_OF_EXP+1):
+    f.write("{}; {}; {}; \n".format(naph_conc[i],ph_HC_integr[i],dl_fl_integr[i]))
+f.close()
 
 plt.figure(5)
 #plt.title("Delayed fluorescence - phosphorescence intensity ratio")
 #plt.plot([], [], ' ', label="Number of solution, naph/b-CD")
-plt.axis([0, 0.017, 0, 0.0028])
-plt.plot(naph_conc, fl_ph_HC_ratio, '-o', label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
-plt.plot(x, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
+#plt.axis([0, 0.017, 0, 0.0028])
+plt.plot(ph_notnorm, dl_fl_integr, '-o')
+#plt.plot(x, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
 plt.legend(loc='best')
 filename = "dlfl_ph_ratio" + ".png"
-plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)")
-plt.ylabel("Интенсивность/Интенсивность")
+plt.xlabel("Квадрат интеральной интенсивности фософресценции, отн. ед.")
+plt.title("Интегральная интенсивность замедленной флуоресценции, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
+plt.grid(True)
 plt.savefig(filename)
 plt.show()
 
@@ -273,8 +293,11 @@ plt.plot(naph_conc, ph_HC_norm, '-o', label = "Интегральная инте
 plt.plot(naph_conc, fl_norm, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
 plt.legend(loc='best')
 plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)")
-plt.ylabel("Интенсивность, отн. ед.")
+plt.title("Интенсивность, отн. ед.",
+           loc = 'left',
+          fontsize = 'medium')
 filename = "Integral intensities" + ".png"
+plt.grid(True)
 plt.savefig(filename)
 plt.show()
 # Запись файла с параметрами
