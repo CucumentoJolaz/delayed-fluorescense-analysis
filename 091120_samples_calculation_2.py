@@ -109,11 +109,11 @@ for i in range(NUM_OF_EXP):
 
 
 # Массивы для хранения названий
-sample_name = ["50 вспышек",
-               "40 вспышек",
-               "30 вспышек",
-               "20 вспышек",
-               "10 вспышек",
+sample_name = ["50 импульсов",
+               "40 импульсов",
+               "30 импульсов",
+               "20 импульсов",
+               "10 импульсов",
                ]
 ph_x_lin = np.linspace(0, 10, 10000);
 ph_y_lin = []
@@ -145,35 +145,40 @@ for j in range(NUM_OF_EXP):
 
 
 # Построение фиттингов для замедленной флуоресценции
-plt.figure(1)
-
+a = plt.figure(1)
+axe = a.add_subplot(111)
+axe.spines['right'].set_visible(False)
+axe.spines['top'].set_visible(False)
 #plt.title("Delayed fluorescence")
 #plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+
 plt.axis([0, 6, 0, 150])
 for i in range(NUM_OF_EXP):
-    plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=0.5)
-    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с")
+    plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=1)
+    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], "--", label=sample_name[i] + " fit", linewidth=0.8)
+plt.xlabel("Время, с", fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
-plt.legend(loc='best')
+          fontsize = 'large')
+plt.legend(loc='best', fontsize = 'large')
 filename = "Delayed fluorescence 3" + ".png"
 plt.savefig(filename)
 
-plt.figure(2)
+a = plt.figure(2)
 #plt.title("Phosphorescence")
 #plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
 plt.axis([0, 10, 0, 400])
-
+axe = a.add_subplot(111)
+axe.spines['right'].set_visible(False)
+axe.spines['top'].set_visible(False)
 for i in range(NUM_OF_EXP):
-    plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=0.5)
-    #plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с")
+    plt.plot(ph_x[i], ph_y[i],  label=sample_name[i], linewidth=1)
+    plt.plot(ph_x_lin, ph_y_lin[i],"--", label=sample_name[i] + " fit", linewidth=0.8)
+plt.xlabel("Время, с", fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
-plt.legend(loc='best')
+          fontsize = 'large')
+plt.legend(loc='best',fontsize = 'large')
 filename = "Phosphorescence 3" + ".png"
 plt.savefig(filename)
 
@@ -199,7 +204,8 @@ for i in range(0, NUM_OF_EXP ):
     dl_fl_integr[i] /= fl_int_max
 
     fl_ph_ratio[i] = dl_fl_integr[i] / (ph_integr[i])
-
+    print("ph", result_ph_sing_exp[i].best_values)
+    print("dlfl", result_dl_fl_sing_exp[i].best_values)
 
 ph_integr[0] = 0.99
 naph_conc = [50, 40, 30, 20, 10, 0]
@@ -217,10 +223,11 @@ for i in range(NUM_OF_EXP+1):
     f.write("{}; {}; {}; \n".format(naph_conc[i],ph_notnorm[i]**0.5,dlfl_notnorm[i]))
 f.close()
 
-fig = plt.figure()
 
-plt.figure(5)
-ax = fig.add_subplot(111)
+a = plt.figure(5)
+axe = a.add_subplot(111)
+# axe.spines['right'].set_visible(False)
+# axe.spines['top'].set_visible(False)
 
 #plt.axis([0, 55, 0, 1.4])
 #plt.title("Delayed fluorescence - phosphorescence intensity ratio")
@@ -228,30 +235,35 @@ ax = fig.add_subplot(111)
 #plt.axis([0, 10, 0, 700])
 plt.plot(ph_notnorm, dlfl_notnorm, '-o') #label = "Соотношение \n (интенсивность замедленной флуоресценции)\n/(интенсивность фосфоресценции)")
 #plt.plot(naph_conc, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
-plt.legend(loc='best')
+plt.legend(loc='best', fontsize = 'large')
 filename = "dlfl_ph_ratio_3" + ".png"
-plt.xlabel("Квадрат интеральной интенсивности фософресценции, отн. ед.^2")
+plt.xlabel("Квадрат интеральной интенсивности фософресценции, отн. ед.^2", fontsize = 'large')
 plt.title("Интегральная интенсивность замедленной флуоресценции, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
+          fontsize = 'large')
 plt.grid(True)
 
 plt.savefig(filename)
-plt.show()
 
-plt.figure(6)
+
+a = plt.figure(6)
+axe = a.add_subplot(111)
+# axe.spines['right'].set_visible(False)
+# axe.spines['top'].set_visible(False)
 plt.axis([0, 55, 0, 1.1])
 plt.plot(naph_conc, ph_integr, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
 plt.plot(naph_conc, dl_fl_integr, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
-plt.legend(loc='best')
+plt.legend(loc='best', fontsize = 'large')
 plt.grid(True)
-plt.xlabel("Количество вспышек, шт")
+plt.xlabel("Количество импульсов, шт", fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
+          fontsize = 'large')
 filename = "Integral intensities_3" + ".png"
 plt.savefig(filename)
 plt.show()
+
+
 # Запись файла с параметрами
 # out_obj = outputs()
 #

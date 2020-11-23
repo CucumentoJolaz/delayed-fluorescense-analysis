@@ -180,48 +180,48 @@ for j in range(NUM_OF_EXP):
 plt.figure(1)
 
 #plt.title("Delayed fluorescence")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 6, 0, 90])
 for i in range(NUM_OF_EXP):
-    plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=0.5)
-    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
+    plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=1,)
+    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], "--", label=sample_name[i] + " fit", linewidth=0.8)
 plt.xlabel("Время, с")
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
-plt.legend(loc='best')
+          fontsize = 'large')
+plt.legend(loc='upper right', fontsize = 'large')
 filename = "Delayed fluorescence 2" + ".png"
 plt.savefig(filename)
 
 plt.figure(2)
 #plt.title("Phosphorescence")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 10, 0, 50])
 
 for i in range(NUM_OF_EXP):
-    plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=0.5)
-    plt.plot(ph_x_lin, ph_y_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с")
+    plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=1)
+    plt.plot(ph_x_lin, ph_y_lin[i], "--", label=sample_name[i] + " fit", linewidth=0.8)
+plt.xlabel("Время, с",  fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
-plt.legend(loc='best')
+          fontsize = 'large')
+plt.legend(loc='best',  fontsize = 'large')
 filename = "Phosphorescence 2" + ".png"
 plt.savefig(filename)
 
 plt.figure(3)
 #plt.title("Phosphorescence with dark filter HC-9")
-plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)/(моль циклодекстрина)")
+plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 10, 0, 700])
 
 for i in range(NUM_OF_EXP):
-    plt.plot(ph_HC_x[i], ph_HC_y[i], label=sample_name[i], linewidth=0.5)
+    plt.plot(ph_HC_x[i], ph_HC_y[i], label=sample_name[i], linewidth=1)
     #plt.plot(ph_x_HC_lin, ph_y_HC_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с")
+plt.xlabel("Время, с",  fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
-plt.legend(loc='best')
+          fontsize = 'large')
+plt.legend(loc='best',  fontsize = 'large')
 
 filename = "Phosphorescence with HC 2" + ".png"
 plt.savefig(filename)
@@ -250,8 +250,8 @@ for i in range(NUM_OF_EXP):
         fl_int_max = dl_fl_integr[0]
     ph_HC_norm[i] = ph_HC_integr[i]/ph_int_max
     fl_norm[i] = dl_fl_integr[i]/fl_int_max
-
-
+    print("ph", result_ph_HC_sing_exp[i].best_values)
+    print("dlfl", result_dl_fl_sing_exp[i].best_values)
 
 ph_HC_norm[0] = 0.99
 naph_conc = [0.015, 0.010, 0.008, 0.004, 0,
@@ -277,12 +277,12 @@ plt.figure(5)
 #plt.axis([0, 0.017, 0, 0.0028])
 plt.plot(ph_notnorm, dl_fl_integr, '-o')
 #plt.plot(x, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
-plt.legend(loc='best')
+plt.legend(loc='best',  fontsize = 'large')
 filename = "dlfl_ph_ratio" + ".png"
-plt.xlabel("Квадрат интеральной интенсивности фософресценции, отн. ед.")
-plt.title("Интегральная интенсивность замедленной флуоресценции, отн. ед.",
+plt.xlabel("Квадрат интеральной интенсивности фософресценции,\n отн. ед.",  fontsize = 'large')
+plt.title("Интегральная интенсивность замедленной флуоресценции,\n отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
+          fontsize = 'large')
 plt.grid(True)
 plt.savefig(filename)
 plt.show()
@@ -291,15 +291,15 @@ plt.figure(6)
 plt.axis([0, 0.017 , 0, 1.05])
 plt.plot(naph_conc, ph_HC_norm, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
 plt.plot(naph_conc, fl_norm, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
-plt.legend(loc='best')
-plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)")
+plt.legend(loc='best',  fontsize = 'large')
+plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)",  fontsize = 'large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'medium')
+          fontsize = 'large')
 filename = "Integral intensities" + ".png"
 plt.grid(True)
 plt.savefig(filename)
-plt.show()
+
 # Запись файла с параметрами
 # out_obj = outputs()
 #
