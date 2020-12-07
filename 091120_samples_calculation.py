@@ -177,51 +177,59 @@ for j in range(NUM_OF_EXP):
         ph_y_HC_lin[j].append(single_exponential(t=i, a=a, tau1=tau, c=c))
 
 # Построение фиттингов для замедленной флуоресценции
-plt.figure(1)
-
+a = plt.figure(1)
+axe = a.add_subplot(111)
+axe.spines['right'].set_visible(False)
+axe.spines['top'].set_visible(False)
 #plt.title("Delayed fluorescence")
 plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 6, 0, 90])
 for i in range(NUM_OF_EXP):
     plt.plot(dl_fl_x[i], dl_fl_y[i], label=sample_name[i], linewidth=1,)
-    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], "--", label=sample_name[i] + " fit", linewidth=0.8)
-plt.xlabel("Время, с")
+    plt.plot(dl_fl_x_lin, dl_fl_y_lin[i], "--", label=sample_name[i] + " фиттинг", linewidth=0.8)
+plt.xlabel("Время, с", fontsize = 'x-large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'large')
-plt.legend(loc='upper right', fontsize = 'large')
+          fontsize = 'x-large')
+plt.legend(loc='upper right', fontsize = 'x-large', frameon=False)
 filename = "Delayed fluorescence 2" + ".png"
 plt.savefig(filename)
 
-plt.figure(2)
+a = plt.figure(2)
+axe = a.add_subplot(111)
+axe.spines['right'].set_visible(False)
+axe.spines['top'].set_visible(False)
 #plt.title("Phosphorescence")
 plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 10, 0, 50])
 
 for i in range(NUM_OF_EXP):
     plt.plot(ph_x[i], ph_y[i], label=sample_name[i], linewidth=1)
-    plt.plot(ph_x_lin, ph_y_lin[i], "--", label=sample_name[i] + " fit", linewidth=0.8)
-plt.xlabel("Время, с",  fontsize = 'large')
+    plt.plot(ph_x_lin, ph_y_lin[i], "--", label=sample_name[i] + " фиттинг", linewidth=0.8)
+plt.xlabel("Время, с",  fontsize = 'x-large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'large')
-plt.legend(loc='best',  fontsize = 'large')
+          fontsize = 'x-large')
+plt.legend(loc='best',  fontsize = 'x-large', frameon = False)
 filename = "Phosphorescence 2" + ".png"
 plt.savefig(filename)
 
-plt.figure(3)
+a = plt.figure(3)
+axe = a.add_subplot(111)
+axe.spines['right'].set_visible(False)
+axe.spines['top'].set_visible(False)
 #plt.title("Phosphorescence with dark filter HC-9")
 plt.plot([], [], ' ', label="Соотношение\n(моль нафталина)\n/(моль циклодекстрина)")
 plt.axis([0, 10, 0, 700])
 
 for i in range(NUM_OF_EXP):
     plt.plot(ph_HC_x[i], ph_HC_y[i], label=sample_name[i], linewidth=1)
-    #plt.plot(ph_x_HC_lin, ph_y_HC_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
-plt.xlabel("Время, с",  fontsize = 'large')
+    plt.plot(ph_x_HC_lin, ph_y_HC_lin[i], label=sample_name[i] + " fit", linewidth=0.5)
+plt.xlabel("Время, с",  fontsize = 'x-large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'large')
-plt.legend(loc='best',  fontsize = 'large')
+          fontsize = 'x-large')
+plt.legend(loc='best',  fontsize = 'x-large', frameon = False)
 
 filename = "Phosphorescence with HC 2" + ".png"
 plt.savefig(filename)
@@ -279,10 +287,10 @@ plt.plot(ph_notnorm, dl_fl_integr, '-o')
 #plt.plot(x, y, '-', linewidth = 0.8, label = "Предполагаемая форма зависимости")
 plt.legend(loc='best',  fontsize = 'large')
 filename = "dlfl_ph_ratio" + ".png"
-plt.xlabel("Квадрат интеральной интенсивности фософресценции,\n отн. ед.",  fontsize = 'large')
+plt.xlabel("Квадрат интеральной интенсивности фософресценции,\n отн. ед.",  fontsize = 'x-large')
 plt.title("Интегральная интенсивность замедленной флуоресценции,\n отн. ед.",
            loc = 'left',
-          fontsize = 'large')
+          fontsize = 'x-large')
 plt.grid(True)
 plt.savefig(filename)
 plt.show()
@@ -292,10 +300,10 @@ plt.axis([0, 0.017 , 0, 1.05])
 plt.plot(naph_conc, ph_HC_norm, '-o', label = "Интегральная интенсивность\n фосфоресценции, отн. ед")
 plt.plot(naph_conc, fl_norm, '-o', label = "Интегральная интенсивность\n замедленной флуоресценции, отн. ед")
 plt.legend(loc='best',  fontsize = 'large')
-plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)",  fontsize = 'large')
+plt.xlabel("Соотношение (моль нафталина)/(моль b-CD)",  fontsize = 'x-large')
 plt.title("Интенсивность, отн. ед.",
            loc = 'left',
-          fontsize = 'large')
+          fontsize = 'x-large')
 filename = "Integral intensities" + ".png"
 plt.grid(True)
 plt.savefig(filename)
